@@ -28,7 +28,7 @@ import com.google.gson.annotations.SerializedName;
             "order_id": "ord123"
         },
         "parameters": {
-            "name": "myapppchen27",
+            "name": "name",
             "region": "cn-north-1",
             "version": "1.0",
             "type": "Tomcat8",
@@ -40,35 +40,35 @@ import com.google.gson.annotations.SerializedName;
                 "replica": 2
             },
             "source": {
-                "repo_url": "https://github.com/paulmchen/session-count.git",
+                "repo_url": "https://github.com/user/project.git",
                 "proj_branch": "master",
                 "repo_namespace": "paulmchen",
-                "secu_token": "d2da8c8a56fc9caa7e8a7186b65e1d25e6be1ed5",
+                "secu_token": "token",
                 "type": "GitHub",
                 "artifact_namespace": "default",
                 "template_name": null
             },
             "platforms": {
                 "vpc": {
-                    "id": "32d823b8-7980-4690-8be0-a03018cc3756"
+                    "id": "123id"
                 },
                 "cce": {
-                    "id": "1680d11b-a6e8-11e8-b6b5-0255ac101f09",
+                    "id": "123id",
                     "parameters": {
                         "namespace": "default"
                     }
                 },
                 "elb": {
-                    "id": "a6e76b8a-6fe1-4a7f-9f17-95b473d34f2c"
+                    "id": "123id"
                 }
                 
             },
             "services": {
                 "distributed_session": {
-                    "id": "392c064f-6316-450b-aed0-0e2f349f8693",
+                    "id": "123id",
                     "desc": "Distributed caching service",
                     "parameters": {
-                        "password": "Huawei@123",
+                        "password": "password",
                         "cluster": "false"
                     }
                 }

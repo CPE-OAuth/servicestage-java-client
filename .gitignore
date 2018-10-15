@@ -1,6 +1,4 @@
-# ignoring this file because it contains a userid and password
-# it must be be explicitly added using $ git add <file>
-/src/test/java/com/huawei/cloud/servicestage/client/AuthHelper.java
+
 
 /bin/
 # Compiled class file

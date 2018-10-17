@@ -105,6 +105,8 @@ public class ServiceInstanceRequestBody {
         r.parameters.platforms = new ServiceInstanceRequestBody.Parameters.Platforms();
 
         r.parameters.platforms.vpc = new ServiceInstanceRequestBody.Parameters.Platforms.VPC();
+        r.parameters.platforms.vpc.parameters = new ServiceInstanceRequestBody.Parameters.Platforms.VPC.VPCParameters();
+        r.parameters.platforms.vpc.parameters.subnet = new ServiceInstanceRequestBody.Parameters.Platforms.VPC.VPCParameters.VPCParametersSubnet();
         r.parameters.platforms.cce = new ServiceInstanceRequestBody.Parameters.Platforms.CCE();
         r.parameters.platforms.cce.parameters = new ServiceInstanceRequestBody.Parameters.Platforms.CCE.CCEParameters();
         r.parameters.platforms.elb = new ServiceInstanceRequestBody.Parameters.Platforms.ELB();
@@ -203,6 +205,19 @@ public class ServiceInstanceRequestBody {
             public static class VPC {
                 @SerializedName("id")
                 public String id;
+
+                public static class VPCParameters {
+                    public static class VPCParametersSubnet {
+                        @SerializedName("id")
+                        public String id;
+                    }
+
+                    @SerializedName("subnet")
+                    public VPCParametersSubnet subnet;
+                }
+
+                @SerializedName("parameters")
+                public VPCParameters parameters;
             }
 
             @SerializedName("vpc")

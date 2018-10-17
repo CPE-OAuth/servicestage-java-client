@@ -234,6 +234,39 @@ public class HuaweiCloudClient implements Constants {
         return map;
     }
 
+    public static Map<String, String> getSubnets(Token token, String vpcId)
+            throws IOException {
+        String apiUrl = ConfigProperties.getProperties()
+                .getProperty(ConfigProperties.SUBNETS_URL);
+
+        String requestUrl = String.format(apiUrl, token.getRegion(),
+                token.getTenantId(), vpcId);
+
+        SimpleResponse response = performGet(requestUrl, token);
+
+        if (!response.isOk()) {
+            return Collections.emptyMap();
+        }
+
+        JsonObject root = new JsonParser().parse(response.getMessage())
+                .getAsJsonObject();
+
+        Map<String, String> map = new LinkedHashMap<>();
+
+        root.getAsJsonArray("subnets").forEach(e -> {
+            JsonObject subnet = e.getAsJsonObject();
+
+            String id = subnet.get("id").getAsString();
+            String name = subnet.get("cidr").getAsString();
+
+            map.put(id, name);
+        });
+
+        logger.info(map.toString());
+
+        return map;
+    }
+
     public static Map<String, String> getDCSInstances(Token token)
             throws IOException {
         String apiUrl = ConfigProperties.getProperties()

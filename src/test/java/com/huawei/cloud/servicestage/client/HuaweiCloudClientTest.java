@@ -18,6 +18,7 @@ package com.huawei.cloud.servicestage.client;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,7 +51,13 @@ public class HuaweiCloudClientTest {
 
     @Test
     public void testGetVPCs() throws IOException {
-        assertFalse(HuaweiCloudClient.getVPCs(token).isEmpty());
+        Map<String, String> vpcs = HuaweiCloudClient.getVPCs(token);
+
+        assertFalse(vpcs.isEmpty());
+
+        for (String vpc : vpcs.keySet()) {
+            assertFalse(HuaweiCloudClient.getSubnets(token, vpc).isEmpty());
+        }
     }
 
     @Test

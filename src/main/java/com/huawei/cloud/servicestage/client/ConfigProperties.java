@@ -43,6 +43,8 @@ public class ConfigProperties {
 
     public static final String VPCS_URL = "VPCS_URL";
 
+    public static final String SUBNETS_URL = "SUBNETS_URL";
+
     public static final String DCS_INSTANCES_URL = "DCS_INSTANCES_URL";
 
     public static final String RDS_INSTANCES_URL = "RDS_INSTANCES_URL";

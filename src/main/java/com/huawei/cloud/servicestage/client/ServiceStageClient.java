@@ -129,7 +129,7 @@ public class ServiceStageClient implements Constants {
 
     public SimpleResponse updateService(String instanceId, String requestBody,
             Token token) throws IOException {
-        String requestUrl = apiUrl + "/apps/instances/" + instanceId
+        String requestUrl = apiUrl + "/apps/service_instances/" + instanceId
                 + "?accepts_incomplete=true";
 
         logger.info(requestUrl);
@@ -351,7 +351,7 @@ public class ServiceStageClient implements Constants {
      */
     public SimpleResponse getApplicationInfo(String instanceId, Token token)
             throws IOException {
-        return performGet("/apps/instances/" + instanceId, token);
+        return performGet("/apps/service_instances/" + instanceId, token);
     }
 
     /**

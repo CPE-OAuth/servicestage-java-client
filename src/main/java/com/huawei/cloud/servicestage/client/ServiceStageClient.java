@@ -62,6 +62,10 @@ public class ServiceStageClient implements Constants {
         this.apiUrl = apiUrl;
     }
 
+    private String getBaseApiUrl(Token token) {
+        return String.format(this.apiUrl, token.getRegion());
+    }
+
     public SimpleResponse createService(String instanceId,
             ServiceInstanceRequestBody body, Token token) throws IOException {
         return createService(instanceId, new Gson().toJson(body), token);
@@ -69,7 +73,7 @@ public class ServiceStageClient implements Constants {
 
     public SimpleResponse createService(String instanceId, String requestBody,
             Token token) throws IOException {
-        String requestUrl = apiUrl + "/apps/service_instances/" + instanceId
+        String requestUrl = getBaseApiUrl(token) + "/apps/service_instances/" + instanceId
                 + "?accepts_incomplete=true";
 
         logger.info(requestUrl);
@@ -129,7 +133,7 @@ public class ServiceStageClient implements Constants {
 
     public SimpleResponse updateService(String instanceId, String requestBody,
             Token token) throws IOException {
-        String requestUrl = apiUrl + "/apps/service_instances/" + instanceId
+        String requestUrl = getBaseApiUrl(token) + "/apps/service_instances/" + instanceId
                 + "?accepts_incomplete=true";
 
         logger.info(requestUrl);
@@ -196,7 +200,7 @@ public class ServiceStageClient implements Constants {
      */
     public SimpleResponse performGet(String requestEndpoint, Token token)
             throws IOException {
-        String requestUrl = apiUrl + requestEndpoint;
+        String requestUrl = getBaseApiUrl(token) + requestEndpoint;
 
         HttpGet request = new HttpGet(requestUrl);
 

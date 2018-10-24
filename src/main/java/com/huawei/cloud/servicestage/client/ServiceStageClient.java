@@ -25,7 +25,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
@@ -63,7 +63,8 @@ public class ServiceStageClient implements Constants {
     }
 
     private String getBaseApiUrl(Token token) {
-        return String.format(this.apiUrl, token.getRegion());
+        return String.format(this.apiUrl, token.getRegion()) + "/"
+                 + token.getTenantId();
     }
 
     public SimpleResponse createService(String instanceId,
@@ -78,7 +79,7 @@ public class ServiceStageClient implements Constants {
 
         logger.info(requestUrl);
 
-        HttpPut request = new HttpPut(requestUrl);
+        HttpPost request = new HttpPost(requestUrl);
 
         // body
         StringEntity body = new StringEntity(requestBody);
@@ -138,7 +139,7 @@ public class ServiceStageClient implements Constants {
 
         logger.info(requestUrl);
 
-        HttpPatch request = new HttpPatch(requestUrl);
+        HttpPut request = new HttpPut(requestUrl);
 
         // body
         StringEntity body = new StringEntity(requestBody);

@@ -92,6 +92,9 @@ public class ServiceStageClient implements Constants {
                 X_BROKER_API_VERSION_HEADER_VALUE);
         request.setHeader(X_AUTH_TOKEN_HEADER_KEY, token.getToken());
 
+        // proxy (if needed)
+        Util.setProxy(request);
+
         // perform request
         CloseableHttpResponse response = HttpClients.createDefault()
                 .execute(request);
@@ -151,6 +154,9 @@ public class ServiceStageClient implements Constants {
         request.setHeader(X_BROKER_API_VERSION_HEADER_KEY,
                 X_BROKER_API_VERSION_HEADER_VALUE);
         request.setHeader(X_AUTH_TOKEN_HEADER_KEY, token.getToken());
+
+        // proxy (if needed)
+        Util.setProxy(request);
 
         // perform request
         CloseableHttpResponse response = HttpClients.createDefault()
@@ -212,6 +218,9 @@ public class ServiceStageClient implements Constants {
         request.setHeader(X_BROKER_API_VERSION_HEADER_KEY,
                 X_BROKER_API_VERSION_HEADER_VALUE);
         request.setHeader(X_AUTH_TOKEN_HEADER_KEY, token.getToken());
+
+        // proxy (if needed)
+        Util.setProxy(request);
 
         // send request
         CloseableHttpResponse response = HttpClients.createDefault()

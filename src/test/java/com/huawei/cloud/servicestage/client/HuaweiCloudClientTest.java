@@ -41,7 +41,13 @@ public class HuaweiCloudClientTest {
 
     @Test
     public void testGetCCEClusters() throws IOException {
-        assertFalse(HuaweiCloudClient.getCCEClusters(token).isEmpty());
+        Map<String, String> clusters = HuaweiCloudClient.getCCEClusters(token);
+
+        assertFalse(clusters.isEmpty());
+
+        for (String cluster : clusters.keySet()) {
+            assertFalse(HuaweiCloudClient.getNamespaces(token, cluster).isEmpty());
+        }
     }
 
     @Test

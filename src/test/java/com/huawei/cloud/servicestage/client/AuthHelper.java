@@ -29,8 +29,6 @@ public class AuthHelper {
 
     public static final String PASSWORD = "";
 
-    public static final String TENANT_ID = "";
-
     private static AuthHelper instance = null;
 
     private Token token = null;

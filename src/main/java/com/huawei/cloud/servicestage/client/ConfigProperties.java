@@ -37,6 +37,8 @@ public class ConfigProperties {
 
     public static final String CCE_CLUSTERS_URL = "CCE_CLUSTERS_URL";
 
+    public static final String CCE_NAMESPACES_URL = "CCE_NAMESPACES_URL";
+
     public static final String ELBS_CLASSIC_URL = "ELBS_CLASSIC_URL";
 
     public static final String ELBS_ENHANCED_URL = "ELBS_ENHANCED_URL";

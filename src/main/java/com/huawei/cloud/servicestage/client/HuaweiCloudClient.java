@@ -17,8 +17,10 @@ package com.huawei.cloud.servicestage.client;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
@@ -265,6 +267,38 @@ public class HuaweiCloudClient implements Constants {
         logger.info(map.toString());
 
         return map;
+    }
+
+    public static Set<String> getNamespaces(Token token, String clusterId)
+            throws IOException {
+        String apiUrl = ConfigProperties.getProperties()
+                .getProperty(ConfigProperties.CCE_NAMESPACES_URL);
+
+        String requestUrl = String.format(apiUrl, clusterId, token.getRegion());
+
+        SimpleResponse response = performGet(requestUrl, token);
+
+        if (!response.isOk()) {
+            return Collections.emptySet();
+        }
+
+        JsonObject root = new JsonParser().parse(response.getMessage())
+                .getAsJsonObject();
+
+        Set<String> set = new HashSet<>();
+
+        root.getAsJsonArray("items").forEach(e -> {
+            JsonObject namespace = e.getAsJsonObject();
+            JsonObject metadata = namespace.get("metadata").getAsJsonObject();
+
+            String name = metadata.get("name").getAsString();
+
+            set.add(name);
+        });
+
+        logger.info(set.toString());
+
+        return set;
     }
 
     public static Map<String, String> getDCSInstances(Token token)

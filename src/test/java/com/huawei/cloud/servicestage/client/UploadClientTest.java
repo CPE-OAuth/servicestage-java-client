@@ -44,7 +44,7 @@ public class UploadClientTest {
     public static void setUpBeforeClass() throws Exception {
         token = AuthHelper.getInstance().getToken();
         domain = token.getUsername();
-        namespace = "default";
+        namespace = domain;
     }
 
     /**
@@ -106,7 +106,7 @@ public class UploadClientTest {
     public void testUpload() throws IOException {
         String localFilePath = "/tmp/sample.war";
         String domain = "hwcse";
-        String namespace = "default";
+        String namespace = domain;
         String repo = "war-test";
         String packageName = "war-test01";
         String version = "1.0.2";

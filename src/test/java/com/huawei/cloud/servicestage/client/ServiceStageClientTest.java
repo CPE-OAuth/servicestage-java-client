@@ -29,6 +29,9 @@ public class ServiceStageClientTest {
 
     private static Token token;
 
+    // REPLACE WITH A VALID ID BEFORE RUNNING TESTS
+    private static final String INSTANCE_ID = "abc-def";
+
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         token = AuthHelper.getInstance().getToken();
@@ -54,7 +57,17 @@ public class ServiceStageClientTest {
 
     @Test
     public void testGetApplicationStatus() throws IOException {
-        assertNotNull("Status was null",
-                new ServiceStageClient().getApplicationStatus("abc", token));
+        assertNotNull("Status was null", new ServiceStageClient()
+                .getApplicationStatus(INSTANCE_ID, token));
+    }
+
+    @Test
+    public void testGetApplicationTaskLogs() throws IOException {
+        SimpleResponse response = new ServiceStageClient()
+                .getApplicationTaskLogs(INSTANCE_ID, token);
+
+        assertNotNull("Logs response was null", response);
+
+        System.out.println(response);
     }
 }

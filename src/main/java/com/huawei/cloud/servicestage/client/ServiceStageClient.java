@@ -391,4 +391,18 @@ public class ServiceStageClient implements Constants {
 
         return true;
     }
+
+    /**
+     * Gets the application task logs
+     * 
+     * @param instanceId
+     * @param token
+     * @return
+     * @throws IOException
+     */
+    public SimpleResponse getApplicationTaskLogs(String instanceId, Token token)
+            throws IOException {
+        return performGet("/apps/service_instances/" + instanceId + "/logs",
+                token);
+    }
 }

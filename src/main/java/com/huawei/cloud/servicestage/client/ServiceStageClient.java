@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 import org.apache.http.HttpEntity;
@@ -45,6 +46,8 @@ import com.google.gson.JsonParser;
  */
 public class ServiceStageClient implements Constants {
     private Logger logger = Util.logger;
+    
+    private ResourceBundle messages = ResourceBundle.getBundle("casmgr_exposed");
 
     private String apiUrl = null;
 
@@ -402,7 +405,25 @@ public class ServiceStageClient implements Constants {
      */
     public SimpleResponse getApplicationTaskLogs(String instanceId, Token token)
             throws IOException {
-        return performGet("/apps/service_instances/" + instanceId + "/logs",
+        SimpleResponse response =  performGet("/apps/service_instances/" + instanceId + "/logs",
                 token);
+        String content = response.getMessage();
+        JsonParser parser = new JsonParser();
+        JsonArray root = parser.parse(content).getAsJsonArray();
+        for (JsonElement entry: root) {
+        	JsonObject logEntry = entry.getAsJsonObject();
+        	String taskName = logEntry.get("task_name").getAsString();
+        	if (taskName != null && !taskName.isEmpty()) {
+        		String theTaskName = messages.getString(taskName);
+        		if (theTaskName != null && !theTaskName.isEmpty()) {
+        			logEntry.addProperty("task_name", theTaskName);
+        		}
+        	}
+        }
+        
+        String theContent =  new GsonBuilder().setPrettyPrinting().create()
+                .toJson(root);
+        logger.info(theContent);
+        return new SimpleResponse(response.isOk(), theContent);
     }
 }

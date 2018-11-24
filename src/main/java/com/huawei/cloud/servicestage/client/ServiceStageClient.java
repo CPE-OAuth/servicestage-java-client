@@ -405,7 +405,7 @@ public class ServiceStageClient implements Constants {
      */
     public SimpleResponse getApplicationTaskLogs(String instanceId, Token token)
             throws IOException {
-        SimpleResponse response =  performGet("/apps/service_instances/" + instanceId + "/logs",
+        SimpleResponse response =  performGet("/apps/service_instances/" + instanceId + "/logs?limit=200",
                 token);
         String content = response.getMessage();
         JsonParser parser = new JsonParser();

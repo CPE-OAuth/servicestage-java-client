@@ -33,6 +33,7 @@ import com.google.gson.annotations.SerializedName;
             "version": "1.0",
             "type": "Tomcat8",
             "display_name": "my tomcat session app",
+            "platform_type": "cce",
             "listener_port": 8080,
             "desc": "What my app does ...",
             "size": {
@@ -154,6 +155,9 @@ public class ServiceInstanceRequestBody {
 
         @SerializedName("type")
         public String type;
+        
+        @SerializedName("platform_type")
+        public String platformType;
 
         @SerializedName("display_name")
         public String displayName;

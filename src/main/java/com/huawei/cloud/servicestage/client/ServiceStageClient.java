@@ -46,8 +46,9 @@ import com.google.gson.JsonParser;
  */
 public class ServiceStageClient implements Constants {
     private Logger logger = Util.logger;
-    
-    private ResourceBundle messages = ResourceBundle.getBundle("casmgr_exposed");
+
+    private ResourceBundle messages = ResourceBundle
+            .getBundle("casmgr_exposed");
 
     private String apiUrl = null;
 
@@ -67,7 +68,7 @@ public class ServiceStageClient implements Constants {
 
     private String getBaseApiUrl(Token token) {
         return String.format(this.apiUrl, token.getRegion()) + "/"
-                 + token.getTenantId();
+                + token.getTenantId();
     }
 
     public SimpleResponse createService(String instanceId,
@@ -77,8 +78,8 @@ public class ServiceStageClient implements Constants {
 
     public SimpleResponse createService(String instanceId, String requestBody,
             Token token) throws IOException {
-        String requestUrl = getBaseApiUrl(token) + "/apps/service_instances/" + instanceId
-                + "?accepts_incomplete=true";
+        String requestUrl = getBaseApiUrl(token) + "/apps/service_instances/"
+                + instanceId + "?accepts_incomplete=true";
 
         logger.info(requestUrl);
 
@@ -140,8 +141,8 @@ public class ServiceStageClient implements Constants {
 
     public SimpleResponse updateService(String instanceId, String requestBody,
             Token token) throws IOException {
-        String requestUrl = getBaseApiUrl(token) + "/apps/service_instances/" + instanceId
-                + "?accepts_incomplete=true";
+        String requestUrl = getBaseApiUrl(token) + "/apps/service_instances/"
+                + instanceId + "?accepts_incomplete=true";
 
         logger.info(requestUrl);
 
@@ -405,23 +406,24 @@ public class ServiceStageClient implements Constants {
      */
     public SimpleResponse getApplicationTaskLogs(String instanceId, Token token)
             throws IOException {
-        SimpleResponse response =  performGet("/apps/service_instances/" + instanceId + "/logs?limit=200",
+        SimpleResponse response = performGet(
+                "/apps/service_instances/" + instanceId + "/logs?limit=200",
                 token);
         String content = response.getMessage();
         JsonParser parser = new JsonParser();
         JsonArray root = parser.parse(content).getAsJsonArray();
-        for (JsonElement entry: root) {
-        	JsonObject logEntry = entry.getAsJsonObject();
-        	String taskName = logEntry.get("task_name").getAsString();
-        	if (taskName != null && !taskName.isEmpty()) {
-        		String theTaskName = messages.getString(taskName);
-        		if (theTaskName != null && !theTaskName.isEmpty()) {
-        			logEntry.addProperty("task_name", theTaskName);
-        		}
-        	}
+        for (JsonElement entry : root) {
+            JsonObject logEntry = entry.getAsJsonObject();
+            String taskName = logEntry.get("task_name").getAsString();
+            if (taskName != null && !taskName.isEmpty()) {
+                String theTaskName = messages.getString(taskName);
+                if (theTaskName != null && !theTaskName.isEmpty()) {
+                    logEntry.addProperty("task_name", theTaskName);
+                }
+            }
         }
-        
-        String theContent =  new GsonBuilder().setPrettyPrinting().create()
+
+        String theContent = new GsonBuilder().setPrettyPrinting().create()
                 .toJson(root);
         logger.info(theContent);
         return new SimpleResponse(response.isOk(), theContent);

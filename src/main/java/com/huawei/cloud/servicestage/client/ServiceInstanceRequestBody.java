@@ -15,6 +15,9 @@
  */
 package com.huawei.cloud.servicestage.client;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -32,6 +35,7 @@ import com.google.gson.annotations.SerializedName;
             "region": "cn-north-1",
             "version": "1.0",
             "type": "Tomcat8",
+            "category": "Webapp",
             "display_name": "my tomcat session app",
             "platform_type": "cce",
             "listener_port": 8080,
@@ -102,6 +106,7 @@ public class ServiceInstanceRequestBody {
         r.parameters = new ServiceInstanceRequestBody.Parameters();
 
         r.parameters.size = new ServiceInstanceRequestBody.Parameters.Size();
+        r.parameters.extendedParam = new LinkedHashMap<String, String>();
         r.parameters.source = new ServiceInstanceRequestBody.Parameters.Source();
         r.parameters.platforms = new ServiceInstanceRequestBody.Parameters.Platforms();
 
@@ -155,7 +160,10 @@ public class ServiceInstanceRequestBody {
 
         @SerializedName("type")
         public String type;
-        
+
+        @SerializedName("category")
+        public String category;
+
         @SerializedName("platform_type")
         public String platformType;
 
@@ -204,6 +212,9 @@ public class ServiceInstanceRequestBody {
 
         @SerializedName("source")
         public Source source;
+
+        @SerializedName("extended_param")
+        public Map<String, String> extendedParam;
 
         public static class Platforms {
             public static class VPC {

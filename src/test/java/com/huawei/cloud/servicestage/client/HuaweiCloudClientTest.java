@@ -46,7 +46,8 @@ public class HuaweiCloudClientTest {
         assertFalse(clusters.isEmpty());
 
         for (String cluster : clusters.keySet()) {
-            assertFalse(HuaweiCloudClient.getNamespaces(token, cluster).isEmpty());
+            assertFalse(
+                    HuaweiCloudClient.getNamespaces(token, cluster).isEmpty());
         }
     }
 

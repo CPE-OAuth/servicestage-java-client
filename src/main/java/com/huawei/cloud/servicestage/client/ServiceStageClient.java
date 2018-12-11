@@ -356,7 +356,7 @@ public class ServiceStageClient implements Constants {
 
         logger.info(url.toString());
 
-        return url == null ? "" : url.getAsString();
+        return url == null || url.isJsonNull() ? "" : url.getAsString();
     }
 
     /**
@@ -416,7 +416,12 @@ public class ServiceStageClient implements Constants {
             JsonObject logEntry = entry.getAsJsonObject();
             String taskName = logEntry.get("task_name").getAsString();
             if (taskName != null && !taskName.isEmpty()) {
-                String theTaskName = messages.getString(taskName);
+                String theTaskName = null;
+                try {
+                    theTaskName = messages.getString(taskName);
+                } catch (Exception e) {
+                }
+
                 if (theTaskName != null && !theTaskName.isEmpty()) {
                     logEntry.addProperty("task_name", theTaskName);
                 }

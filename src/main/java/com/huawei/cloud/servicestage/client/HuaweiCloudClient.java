@@ -23,10 +23,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.net.ssl.SSLContext;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
@@ -42,6 +48,8 @@ public class HuaweiCloudClient implements Constants {
     protected static SimpleResponse performGet(String requestUrl, Token token)
             throws IOException {
         HttpGet request = new HttpGet(requestUrl);
+        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
 
         logger.info(requestUrl);
 
@@ -53,9 +61,22 @@ public class HuaweiCloudClient implements Constants {
         // proxy (if needed)
         Util.setProxy(request);
 
+        // bypass SSL cert 
+        SSLContext sslContext;
+		try {
+			sslContext = new SSLContextBuilder()
+				      .loadTrustMaterial(null, (certificate, authType) -> true).build();
+
+			client = HttpClients.custom()
+        	      .setSSLContext(sslContext)
+        	      .setSSLHostnameVerifier(new NoopHostnameVerifier())
+        	      .build();
+		} catch (Exception e) {
+            throw new NoHttpResponseException("Failed in HTTP client creation.");
+        }
+        
         // send request
-        CloseableHttpResponse response = HttpClients.createDefault()
-                .execute(request);
+		response = client.execute(request);
 
         try {
             HttpEntity entity = response.getEntity();

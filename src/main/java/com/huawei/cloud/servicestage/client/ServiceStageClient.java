@@ -376,17 +376,7 @@ public class ServiceStageClient implements Constants {
             JsonObject group = e.getAsJsonObject();
             
             JsonObject params = group.get("parameters").getAsJsonObject();
-//            String name = params.get("name").getAsString();
             String id = params.get("group_id").getAsString();
-//            String groupVPCid = params.get("platforms").getAsJsonObject()
-//            		.get("vpc").getAsJsonObject()
-//            		.get("id").getAsString();
-//            String groupSubnetId = params.get("platforms").getAsJsonObject()
-//            		.get("vpc").getAsJsonObject()
-//            		.get("parameters").getAsJsonObject()
-//            		.get("subnet").getAsJsonObject()
-//            		.get("id").getAsString();
-
             map.put(id, params);
         });
 

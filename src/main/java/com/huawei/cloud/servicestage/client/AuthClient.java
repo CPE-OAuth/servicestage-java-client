@@ -16,13 +16,21 @@
 package com.huawei.cloud.servicestage.client;
 
 import java.io.IOException;
+
+import javax.net.ssl.SSLContext;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -48,15 +56,18 @@ public class AuthClient implements Constants {
      * @throws IOException
      */
     public static Token getAuthToken(String region, String username,
-            String password) throws IOException {
+            String password, String domain) throws IOException {
+    	
         String requestUrl = String.format(ConfigProperties.getProperties()
                 .getProperty(ConfigProperties.AUTH_API_URL), region);
 
         HttpPost request = new HttpPost(requestUrl);
+        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
 
         // body
         StringEntity body = new StringEntity(
-                getRequestBody(region, username, password));
+                getRequestBody(region, username, password, domain));
         body.setContentType(CONTENT_TYPE_HEADER_VALUE);
         request.setEntity(body);
 
@@ -67,9 +78,22 @@ public class AuthClient implements Constants {
         // proxy (if needed)
         Util.setProxy(request);
 
+        // bypass SSL cert 
+        SSLContext sslContext;
+		try {
+			sslContext = new SSLContextBuilder()
+				      .loadTrustMaterial(null, (certificate, authType) -> true).build();
+
+			client = HttpClients.custom()
+        	      .setSSLContext(sslContext)
+        	      .setSSLHostnameVerifier(new NoopHostnameVerifier())
+        	      .build();
+		} catch (Exception e) {
+            throw new NoHttpResponseException("Failed in HTTP client creation.");
+        }
+        
         // send request
-        CloseableHttpResponse response = HttpClients.createDefault()
-                .execute(request);
+		response = client.execute(request);
 
         try {
             HttpEntity entity = response.getEntity();
@@ -108,13 +132,13 @@ public class AuthClient implements Constants {
     }
 
     private static String getRequestBody(String region, String username,
-            String password) {
+            String password, String domain) {
         AuthTokenRequestBody r = AuthTokenRequestBody.newEmptyInstance();
 
         r.auth.identity.methods.add("password");
         r.auth.identity.password.user.name = username;
         r.auth.identity.password.user.password = password;
-        r.auth.identity.password.user.domain.name = username;
+        r.auth.identity.password.user.domain.name = (domain!=null || domain=="")? domain : username;
         r.auth.scope.project.name = region;
 
         return new Gson().toJson(r);

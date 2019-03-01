@@ -28,13 +28,15 @@ public class AuthHelper {
     public static final String USERNAME = "";
 
     public static final String PASSWORD = "";
+    
+    public static final String DOMAIN = "";
 
     private static AuthHelper instance = null;
 
     private Token token = null;
 
     protected AuthHelper() throws IOException {
-        this.token = AuthClient.getAuthToken(REGION, USERNAME, PASSWORD);
+        this.token = AuthClient.getAuthToken(REGION, USERNAME, PASSWORD, DOMAIN);
         assertNotNull("Failed to get Auth Token.", this.token);
     }
 

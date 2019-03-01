@@ -27,7 +27,7 @@ public class AuthClientTest {
     @Test
     public void testGetAuthToken() throws IOException {
         Token token = AuthClient.getAuthToken(AuthHelper.REGION,
-                AuthHelper.USERNAME, AuthHelper.PASSWORD);
+                AuthHelper.USERNAME, AuthHelper.PASSWORD, AuthHelper.DOMAIN);
         System.out.println(token);
 
         assertFalse(token.isExpired());

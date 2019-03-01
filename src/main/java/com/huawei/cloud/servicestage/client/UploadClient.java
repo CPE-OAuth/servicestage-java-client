@@ -83,7 +83,9 @@ public class UploadClient implements Constants {
                 AUTHORIZATION_HEADER_VALUE_PREFIX + token.getToken());
 
         // proxy (if needed)
-        Util.setProxy(request);
+        if (!requestUrl.contains("localhost")) {
+    		Util.setProxy(request);
+        }
 
         // bypass SSL cert 
         SSLContext sslContext;
@@ -249,7 +251,10 @@ public class UploadClient implements Constants {
         CloseableHttpResponse response = null;
 
         // proxy (if needed)
-        Util.setProxy(request);
+        if (!requestUrl.contains("localhost")) {
+    		Util.setProxy(request);
+        }
+
 
         // file
         File file = new File(localFilePath);

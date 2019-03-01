@@ -25,11 +25,11 @@ import com.huawei.cloud.servicestage.client.Token;
 public class AuthHelper {
     public static final String REGION = "cn-north-1";
 
-    public static final String USERNAME = "";
+    public static final String USERNAME = "e00415614";
 
-    public static final String PASSWORD = "";
+    public static final String PASSWORD = "cloud1234!";
     
-    public static final String DOMAIN = "";
+    public static final String DOMAIN = "hwstaff_f00341949";
 
     private static AuthHelper instance = null;
 

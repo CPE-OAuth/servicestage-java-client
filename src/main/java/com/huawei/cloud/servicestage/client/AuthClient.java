@@ -66,7 +66,7 @@ public class AuthClient implements Constants {
         CloseableHttpResponse response = null;
 
         // update domain value for non IAM users
-        domain = (domain!=null || domain=="")? domain : username;
+        domain = (domain!=null && !domain.isEmpty())? domain : username; // failover to username if domain is not specified.
         
         // body
         StringEntity body = new StringEntity(
@@ -79,10 +79,7 @@ public class AuthClient implements Constants {
         request.setHeader(ACCEPT_HEADER_KEY, ACCEPT_HEADER_VALUE);
 
         // proxy (if needed)
-        if (!requestUrl.contains("localhost")) {
-        		Util.setProxy(request);
-    	}
-
+   		Util.setProxy(request);
 
         // bypass SSL cert 
         SSLContext sslContext;

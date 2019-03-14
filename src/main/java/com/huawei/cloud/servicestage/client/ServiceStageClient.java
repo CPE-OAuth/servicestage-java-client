@@ -105,10 +105,7 @@ public class ServiceStageClient implements Constants {
         request.setHeader(X_AUTH_TOKEN_HEADER_KEY, token.getToken());
 
         // proxy (if needed)
-        if (!requestUrl.contains("localhost")) {
-    		Util.setProxy(request);
-        }
-
+  		Util.setProxy(request);
 
         // bypass SSL cert 
         SSLContext sslContext;
@@ -185,9 +182,7 @@ public class ServiceStageClient implements Constants {
         request.setHeader(X_AUTH_TOKEN_HEADER_KEY, token.getToken());
 
         // proxy (if needed)
-        if (!requestUrl.contains("localhost")) {
-    		Util.setProxy(request);
-        }
+   		Util.setProxy(request);
         
 
         // bypass SSL cert 
@@ -267,9 +262,7 @@ public class ServiceStageClient implements Constants {
         request.setHeader(X_AUTH_TOKEN_HEADER_KEY, token.getToken());
 
         // proxy (if needed)
-        if (!requestUrl.contains("localhost")) {
-        		Util.setProxy(request);
-    	}
+   		Util.setProxy(request);
 
         // bypass SSL cert 
         SSLContext sslContext;

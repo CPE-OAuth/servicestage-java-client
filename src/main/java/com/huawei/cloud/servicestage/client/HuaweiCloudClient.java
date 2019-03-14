@@ -59,9 +59,7 @@ public class HuaweiCloudClient implements Constants {
         request.setHeader(X_LANGUAGE_HEADER_KEY, X_LANGUAGE_HEADER_VALUE);
 
         // proxy (if needed)
-        if (!requestUrl.contains("localhost")) {
-        		Util.setProxy(request);
-    	}
+   		Util.setProxy(request);
 
 
         // bypass SSL cert 

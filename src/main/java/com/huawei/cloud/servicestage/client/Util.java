@@ -53,6 +53,11 @@ public class Util {
      */
     public static void setProxy(HttpRequestBase request)
             throws MalformedURLException {
+    	
+    	if (request.getURI().getHost().contains("localhost")) {
+    		return;
+    	}
+    	
         String proxyUrl = System.getenv("HTTP_PROXY");
 
         if (proxyUrl == null || proxyUrl.isEmpty()) {

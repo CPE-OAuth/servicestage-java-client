@@ -44,6 +44,7 @@ import com.google.gson.annotations.SerializedName;
                 "id": "SMALL-10G:1.0C:2G",
                 "replica": 2
             },
+            "group_id": "123id",
             "source": {
                 "repo_url": "https://github.com/user/project.git",
                 "proj_branch": "master",
@@ -187,6 +188,9 @@ public class ServiceInstanceRequestBody {
         @SerializedName("size")
         public Size size;
 
+        @SerializedName("group_id")
+        public String group_id;
+        
         public static class Source {
             @SerializedName("repo_url")
             public String repoUrl;

@@ -23,7 +23,7 @@ import com.huawei.cloud.servicestage.client.AuthClient;
 import com.huawei.cloud.servicestage.client.Token;
 
 public class AuthHelper {
-    public static final String REGION = "cn-north-1";
+    public static final String REGION = "";
 
     public static final String USERNAME = "";
 

@@ -65,6 +65,9 @@ public class AuthClient implements Constants {
         CloseableHttpClient client = HttpClients.createDefault();
         CloseableHttpResponse response = null;
 
+        // update domain value for non IAM users
+        domain = (domain!=null && !domain.isEmpty())? domain : username; // failover to username if domain is not specified.
+        
         // body
         StringEntity body = new StringEntity(
                 getRequestBody(region, username, password, domain));
@@ -76,7 +79,7 @@ public class AuthClient implements Constants {
         request.setHeader(ACCEPT_HEADER_KEY, ACCEPT_HEADER_VALUE);
 
         // proxy (if needed)
-        Util.setProxy(request);
+   		Util.setProxy(request);
 
         // bypass SSL cert 
         SSLContext sslContext;
@@ -121,7 +124,7 @@ public class AuthClient implements Constants {
                 String token = response.getFirstHeader(AUTH_TOKEN_HEADER)
                         .getValue();
 
-                return new Token(username, region, token, tenantId, expiresAt);
+                return new Token(username, region, token, tenantId, domain, expiresAt);
             } else {
                 throw new IOException(response.getStatusLine().getStatusCode()
                         + ": " + content);
@@ -138,7 +141,7 @@ public class AuthClient implements Constants {
         r.auth.identity.methods.add("password");
         r.auth.identity.password.user.name = username;
         r.auth.identity.password.user.password = password;
-        r.auth.identity.password.user.domain.name = (domain!=null || domain=="")? domain : username;
+        r.auth.identity.password.user.domain.name = domain;
         r.auth.scope.project.name = region;
 
         return new Gson().toJson(r);

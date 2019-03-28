@@ -50,6 +50,12 @@ public class ServiceStageClientTest {
     }
 
     @Test
+    public void testGetApplicationGroups() throws IOException {
+        assertFalse(
+                new ServiceStageClient().getApplicationGroupsMetaData(token).isEmpty());
+    }
+    
+    @Test
     public void testGetApplicationInfo() throws IOException {
         assertTrue(new ServiceStageClient().getApplicationInfo("abc", token)
                 .isOk());

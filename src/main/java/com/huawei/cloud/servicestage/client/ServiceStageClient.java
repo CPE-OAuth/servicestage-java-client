@@ -105,7 +105,7 @@ public class ServiceStageClient implements Constants {
         request.setHeader(X_AUTH_TOKEN_HEADER_KEY, token.getToken());
 
         // proxy (if needed)
-        Util.setProxy(request);
+  		Util.setProxy(request);
 
         // bypass SSL cert 
         SSLContext sslContext;
@@ -182,7 +182,8 @@ public class ServiceStageClient implements Constants {
         request.setHeader(X_AUTH_TOKEN_HEADER_KEY, token.getToken());
 
         // proxy (if needed)
-        Util.setProxy(request);
+   		Util.setProxy(request);
+        
 
         // bypass SSL cert 
         SSLContext sslContext;
@@ -261,7 +262,7 @@ public class ServiceStageClient implements Constants {
         request.setHeader(X_AUTH_TOKEN_HEADER_KEY, token.getToken());
 
         // proxy (if needed)
-        Util.setProxy(request);
+   		Util.setProxy(request);
 
         // bypass SSL cert 
         SSLContext sslContext;
@@ -350,6 +351,33 @@ public class ServiceStageClient implements Constants {
 
         return map;
     }
+    
+    public Map<String, JsonObject> getApplicationGroupsMetaData(Token token)
+            throws IOException {
+        SimpleResponse response = performGet("/apps/groups", token);
+
+        if (!response.isOk()) {
+            return Collections.emptyMap();
+        }
+
+        JsonArray root = new JsonParser().parse(response.getMessage())
+                .getAsJsonArray();
+
+        Map<String, JsonObject> map = new LinkedHashMap<>();
+
+        root.forEach(e -> {
+            JsonObject group = e.getAsJsonObject();
+            
+            JsonObject params = group.get("parameters").getAsJsonObject();
+            String id = params.get("group_id").getAsString();
+            map.put(id, params);
+        });
+
+        logger.info(map.toString());
+
+        return map;
+    }
+    
 
     /**
      * CURRENT_STATUS from the application info, e.g. FAILED, RUNNING, etc

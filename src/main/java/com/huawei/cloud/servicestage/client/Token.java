@@ -28,6 +28,8 @@ import com.google.gson.Gson;
  */
 public class Token {
     private String username;
+    
+    private String domain;
 
     private String region;
 
@@ -36,15 +38,16 @@ public class Token {
     private LocalDateTime expiresAt;
 
     private String tenantId;
-
-    public Token(String username, String region, String token, String tenantId,
+    
+    public Token(String username, String region, String token, String tenantId, String domain,
             String expiresAt) {
-        this(username, region, token, tenantId, Util.stringToDate(expiresAt));
+        this(username, region, token, tenantId, domain, Util.stringToDate(expiresAt));
     }
 
-    public Token(String username, String region, String token, String tenantId,
+    public Token(String username, String region, String token, String tenantId, String domain,
             LocalDateTime expiresAt) {
         this.username = username;
+        this.domain = domain;
         this.region = region;
         this.token = token;
         this.tenantId = tenantId;
@@ -61,6 +64,10 @@ public class Token {
 
     public String getUsername() {
         return username;
+    }
+    
+    public String getDomain() {
+        return domain;
     }
 
     public String getTenantId() {

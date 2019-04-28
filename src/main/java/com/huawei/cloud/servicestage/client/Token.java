@@ -36,14 +36,17 @@ public class Token {
     private LocalDateTime expiresAt;
 
     private String tenantId;
+    
+    private String domain;
 
-    public Token(String username, String region, String token, String tenantId,
+    public Token(String domain, String username, String region, String token, String tenantId,
             String expiresAt) {
-        this(username, region, token, tenantId, Util.stringToDate(expiresAt));
+        this(domain, username, region, token, tenantId, Util.stringToDate(expiresAt));
     }
 
-    public Token(String username, String region, String token, String tenantId,
+    public Token(String domain, String username, String region, String token, String tenantId,
             LocalDateTime expiresAt) {
+    	this.domain = domain;
         this.username = username;
         this.region = region;
         this.token = token;
@@ -69,6 +72,10 @@ public class Token {
 
     public String getRegion() {
         return region;
+    }
+    
+    public String getDomain() {
+        return domain;
     }
 
     public boolean isExpired() {

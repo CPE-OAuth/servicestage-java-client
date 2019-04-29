@@ -51,19 +51,24 @@ import com.google.gson.JsonParser;
 public class UploadClient implements Constants {
     private Logger logger = Util.logger;
 
-    private String apiUrl = null;
+    private String swrUploadUrl = null;
+
+    private String swrMgmtUrl = null;
 
     public UploadClient() throws IOException {
-        this.apiUrl = ConfigProperties.getProperties()
-                .getProperty(ConfigProperties.UPLOAD_API_URL);
+        this(ConfigProperties.getProperties()
+                .getProperty(ConfigProperties.SWR_UPLOAD_API_URL),
+                ConfigProperties.getProperties()
+                        .getProperty(ConfigProperties.SWR_MGMT_API_URL));
     }
 
-    public UploadClient(String apiUrl) {
-        this.apiUrl = apiUrl;
+    public UploadClient(String swrUploadUrl, String swrMgmtUrl) {
+        this.swrUploadUrl = swrUploadUrl;
+        this.swrMgmtUrl = swrMgmtUrl;
     }
 
-    public SimpleResponse performGet(String requestEndpoint, Token token)
-            throws IOException {
+    public SimpleResponse performGet(String apiUrl, String requestEndpoint,
+            Token token) throws IOException {
         String requestUrlBase = String.format(apiUrl, token.getRegion());
         String requestUrl = requestUrlBase + requestEndpoint;
 
@@ -81,27 +86,27 @@ public class UploadClient implements Constants {
                 X_SWR_DECOMPRESS_HEADER_VALUE);
         request.setHeader(AUTHORIZATION_HEADER_KEY,
                 AUTHORIZATION_HEADER_VALUE_PREFIX + token.getToken());
+        request.setHeader(X_AUTH_TOKEN_HEADER_KEY, token.getToken());
 
         // proxy (if needed)
         Util.setProxy(request);
 
-        // bypass SSL cert 
+        // bypass SSL cert
         SSLContext sslContext;
-		try {
-			sslContext = new SSLContextBuilder()
-				      .loadTrustMaterial(null, (certificate, authType) -> true).build();
+        try {
+            sslContext = new SSLContextBuilder()
+                    .loadTrustMaterial(null, (certificate, authType) -> true)
+                    .build();
 
-			client = HttpClients.custom()
-        	      .setSSLContext(sslContext)
-        	      .setSSLHostnameVerifier(new NoopHostnameVerifier())
-        	      .build();
-		} catch (Exception e) {
+            client = HttpClients.custom().setSSLContext(sslContext)
+                    .setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+        } catch (Exception e) {
             throw new IOException("Failed in HTTP client creation.");
         }
-        
+
         // send request
-		response = client.execute(request);
-		
+        response = client.execute(request);
+
         try {
             HttpEntity entity = response.getEntity();
 
@@ -121,9 +126,39 @@ public class UploadClient implements Constants {
         }
     }
 
+    public Set<String> getNamespaces(String domain, Token token)
+            throws IOException {
+        SimpleResponse response = performGet(swrMgmtUrl, "/manage/namespaces",
+                token);
+
+        if (!response.isOk()) {
+            throw new FileNotFoundException(response.getMessage());
+        }
+
+        JsonParser parser = new JsonParser();
+        JsonObject root = parser.parse(response.getMessage()).getAsJsonObject();
+
+        Set<String> namespaces = new HashSet<>();
+
+        JsonArray namespacesObj = root.getAsJsonArray("namespaces");
+
+        if (namespacesObj == null || namespacesObj.isJsonNull()) {
+            return namespaces;
+        }
+
+        for (JsonElement e : namespacesObj) {
+            JsonObject namespaceObj = e.getAsJsonObject();
+            String name = namespaceObj.get("name").getAsString();
+
+            namespaces.add(name);
+        }
+
+        return namespaces;
+    }
+
     public Set<String> getRepos(String domain, String namespace, Token token)
             throws IOException {
-        SimpleResponse response = performGet("/domains/" + domain
+        SimpleResponse response = performGet(swrUploadUrl, "/domains/" + domain
                 + "/namespaces/" + namespace + "/repositories/", token);
 
         if (!response.isOk()) {
@@ -146,7 +181,7 @@ public class UploadClient implements Constants {
 
     public Set<String> getPackages(String domain, String namespace, String repo,
             Token token) throws IOException {
-        SimpleResponse response = performGet(
+        SimpleResponse response = performGet(swrUploadUrl,
                 "/domains/" + domain + "/namespaces/" + namespace
                         + "/repositories/" + repo + "/packages",
                 token);
@@ -171,9 +206,11 @@ public class UploadClient implements Constants {
 
     public Set<String> getVersions(String domain, String namespace, String repo,
             String packageName, Token token) throws IOException {
-        SimpleResponse response = performGet("/domains/" + domain
-                + "/namespaces/" + namespace + "/repositories/" + repo
-                + "/packages/" + packageName + "/versions", token);
+        SimpleResponse response = performGet(swrUploadUrl,
+                "/domains/" + domain + "/namespaces/" + namespace
+                        + "/repositories/" + repo + "/packages/" + packageName
+                        + "/versions",
+                token);
 
         if (!response.isOk()) {
             throw new FileNotFoundException(response.getMessage());
@@ -196,7 +233,7 @@ public class UploadClient implements Constants {
     public String getExternalUrl(String domain, String namespace, String repo,
             String packageName, String version, String filename, Token token)
             throws IOException {
-        SimpleResponse response = performGet(
+        SimpleResponse response = performGet(swrUploadUrl,
                 "/domains/" + domain + "/namespaces/" + namespace
                         + "/repositories/" + repo + "/packages/" + packageName
                         + "/versions/" + version + "/file_paths/",
@@ -236,7 +273,7 @@ public class UploadClient implements Constants {
     public SimpleResponse upload(String localFilePath, String domain,
             String namespace, String repo, String packageName, String version,
             String name, Token token) throws IOException {
-        String baseRequestUrl = String.format(apiUrl, token.getRegion());
+        String baseRequestUrl = String.format(swrUploadUrl, token.getRegion());
         String requestUrl = baseRequestUrl + "/domains/" + domain
                 + "/namespaces/" + namespace + "/repositories/" + repo
                 + "/packages/" + packageName + "/versions/" + version
@@ -264,22 +301,22 @@ public class UploadClient implements Constants {
         request.setHeader(AUTHORIZATION_HEADER_KEY,
                 AUTHORIZATION_HEADER_VALUE_PREFIX + token.getToken());
 
-        // bypass SSL cert 
+        // bypass SSL cert
         SSLContext sslContext;
-		try {
-			sslContext = new SSLContextBuilder()
-				      .loadTrustMaterial(null, (certificate, authType) -> true).build();
+        try {
+            sslContext = new SSLContextBuilder()
+                    .loadTrustMaterial(null, (certificate, authType) -> true)
+                    .build();
 
-			client = HttpClients.custom()
-        	      .setSSLContext(sslContext)
-        	      .setSSLHostnameVerifier(new NoopHostnameVerifier())
-        	      .build();
-		} catch (Exception e) {
-            throw new NoHttpResponseException("Failed in HTTP client creation.");
+            client = HttpClients.custom().setSSLContext(sslContext)
+                    .setSSLHostnameVerifier(new NoopHostnameVerifier()).build();
+        } catch (Exception e) {
+            throw new NoHttpResponseException(
+                    "Failed in HTTP client creation.");
         }
-        
+
         // send request
-		response = client.execute(request);
+        response = client.execute(request);
 
         try {
             HttpEntity entity = response.getEntity();

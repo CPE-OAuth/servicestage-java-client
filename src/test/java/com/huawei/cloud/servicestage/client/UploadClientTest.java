@@ -68,6 +68,14 @@ public class UploadClientTest {
     public void tearDown() throws Exception {
     }
 
+    @Test
+    public void testGetNamespaces() throws IOException {
+        Set<String> namespaces = new UploadClient().getNamespaces(domain,
+                token);
+        System.out.println(namespaces);
+        assertFalse("namespaces empty", namespaces.isEmpty());
+    }
+
     /**
      * Test method for {@link com.huawei.cloud.servicestage.client.new
      * UploadClient()#getRepos(com.huawei.cloud.servicestage.client.Token)}.

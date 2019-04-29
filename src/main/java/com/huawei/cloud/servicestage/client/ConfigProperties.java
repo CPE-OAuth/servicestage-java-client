@@ -29,7 +29,9 @@ public class ConfigProperties {
 
     public static final String AUTH_API_URL = "AUTH_API_URL";
 
-    public static final String UPLOAD_API_URL = "UPLOAD_API_URL";
+    public static final String SWR_UPLOAD_API_URL = "SWR_UPLOAD_API_URL";
+
+    public static final String SWR_MGMT_API_URL = "SWR_MGMT_API_URL";
 
     public static final String CONIFG_FILE_NAME = "config.properties";
 

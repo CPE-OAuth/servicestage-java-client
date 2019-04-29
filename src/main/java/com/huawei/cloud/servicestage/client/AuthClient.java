@@ -110,18 +110,22 @@ public class AuthClient implements Constants {
                 JsonObject root = parser.parse(content).getAsJsonObject();
                 JsonObject tokenObj = root.getAsJsonObject("token");
                 JsonObject projectObj = tokenObj.getAsJsonObject("project");
+                JsonObject domainObj = projectObj.getAsJsonObject("domain");
 
                 // token.expires_at
                 String expiresAt = tokenObj.get("expires_at").getAsString();
 
                 // token.project.id
                 String tenantId = projectObj.get("id").getAsString();
+                
+                // token.project.domain.name
+                String domainReal = domainObj.get("name").getAsString();
 
                 // x-subject-token header
                 String token = response.getFirstHeader(AUTH_TOKEN_HEADER)
                         .getValue();
 
-                return new Token(username, region, token, tenantId, expiresAt);
+                return new Token(domainReal, username, region, token, tenantId, expiresAt);
             } else {
                 throw new IOException(response.getStatusLine().getStatusCode()
                         + ": " + content);
@@ -138,7 +142,7 @@ public class AuthClient implements Constants {
         r.auth.identity.methods.add("password");
         r.auth.identity.password.user.name = username;
         r.auth.identity.password.user.password = password;
-        r.auth.identity.password.user.domain.name = (domain!=null || domain=="")? domain : username;
+        r.auth.identity.password.user.domain.name = (domain==null || domain=="")? username : domain;
         r.auth.scope.project.name = region;
 
         return new Gson().toJson(r);
